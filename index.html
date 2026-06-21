@@ -6,7 +6,12 @@
 <meta name="theme-color" content="#111316"/>
 <title>Unlock</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
-<link rel="apple-touch-icon" href="favicon.svg"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Unlock"/>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap');
@@ -157,6 +162,15 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .numkey.ghost{background:transparent;pointer-events:none;}
 .numkey.del{font-size:18px;color:var(--on-surface-variant);}
 .txt-back{display:flex;align-items:center;gap:4px;color:var(--on-surface-variant);font-size:14px;font-weight:600;}
+.install-banner{position:fixed;left:0;right:0;bottom:0;z-index:200;max-width:412px;margin:0 auto;background:var(--sc-high);border-top:1px solid var(--outline-variant);padding:16px 18px calc(16px + env(safe-area-inset-bottom));display:none;align-items:center;gap:14px;animation:slideup 0.3s ease;}
+.install-banner.show{display:flex;}
+@keyframes slideup{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.install-banner .ib-icon{width:42px;height:42px;border-radius:12px;background:var(--primary);color:var(--on-primary);display:flex;align-items:center;justify-content:center;font-size:24px;flex:0 0 auto;}
+.install-banner .ib-text{flex:1;}
+.install-banner .ib-title{font-size:14px;font-weight:700;}
+.install-banner .ib-sub{font-size:12px;color:var(--on-surface-variant);margin-top:1px;}
+.install-banner .ib-add{background:var(--primary);color:var(--on-primary);font-weight:700;font-size:14px;padding:10px 16px;border-radius:20px;flex:0 0 auto;}
+.install-banner .ib-close{color:var(--on-surface-variant);font-size:22px;flex:0 0 auto;}
 </style>
 </head>
 <body>
@@ -275,6 +289,13 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   </div>
 </div>
 
+</div>
+
+<div class="install-banner" id="install-banner">
+  <div class="ib-icon"><span class="material-symbols-outlined fill">install_mobile</span></div>
+  <div class="ib-text"><div class="ib-title">Add Unlock to your home screen</div><div class="ib-sub" id="ib-sub">Tap to install it like an app</div></div>
+  <button class="ib-add" id="ib-add" onclick="doInstall()">Add</button>
+  <button class="ib-close material-symbols-outlined" onclick="hideInstall()">close</button>
 </div>
 
 <script>
@@ -515,6 +536,29 @@ function parentReset(){if(confirm('Reset everything for a new day?')){resetState
 
 function init(){loadState();openPhase(getTimePhase());}
 init();
+
+/* ---- PWA: service worker + install prompt ---- */
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
+
+let deferredPrompt=null;
+const isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+const INSTALL_DISMISS='unlock_install_dismissed';
+
+function showInstall(){if(localStorage.getItem(INSTALL_DISMISS)||isStandalone)return;document.getElementById('install-banner').classList.add('show');}
+function hideInstall(){document.getElementById('install-banner').classList.remove('show');try{localStorage.setItem(INSTALL_DISMISS,'1');}catch(e){}}
+async function doInstall(){
+  if(deferredPrompt){deferredPrompt.prompt();const r=await deferredPrompt.userChoice;deferredPrompt=null;if(r.outcome==='accepted')hideInstall();else document.getElementById('install-banner').classList.remove('show');}
+}
+
+window.addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();deferredPrompt=e;showInstall();});
+window.addEventListener('appinstalled',()=>{document.getElementById('install-banner').classList.remove('show');});
+
+if(isIOS && !isStandalone && !localStorage.getItem(INSTALL_DISMISS)){
+  document.getElementById('ib-sub').textContent='Tap the Share icon, then "Add to Home Screen"';
+  document.getElementById('ib-add').style.display='none';
+  setTimeout(showInstall,1500);
+}
 </script>
 </body>
 </html>

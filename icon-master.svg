@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" fill="#111316"/>
+  <!-- phone body -->
+  <rect x="146" y="96" width="220" height="320" rx="34" fill="#1e2023" stroke="#93e2ff" stroke-width="16"/>
+  <!-- screen -->
+  <rect x="178" y="146" width="156" height="206" rx="12" fill="#0c0e11"/>
+  <!-- speaker -->
+  <rect x="226" y="118" width="60" height="11" rx="5.5" fill="#93e2ff"/>
+  <!-- home dot -->
+  <circle cx="256" cy="384" r="12" fill="#93e2ff"/>
+  <!-- jail bars -->
+  <g stroke="#ffd16d" stroke-width="18" stroke-linecap="round">
+    <line x1="206" y1="72" x2="206" y2="440"/>
+    <line x1="256" y1="72" x2="256" y2="440"/>
+    <line x1="306" y1="72" x2="306" y2="440"/>
+    <line x1="178" y1="72" x2="334" y2="72"/>
+    <line x1="178" y1="440" x2="334" y2="440"/>
+  </g>
+</svg>

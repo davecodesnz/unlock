@@ -9,6 +9,9 @@ const types = {
   '.ico': 'image/x-icon',
   '.js': 'text/javascript',
   '.css': 'text/css',
+  '.png': 'image/png',
+  '.json': 'application/json',
+  '.webmanifest': 'application/manifest+json',
 };
 
 http.createServer((req, res) => {
