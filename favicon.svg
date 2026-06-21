@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="14" fill="#111316"/>
+  <!-- phone body -->
+  <rect x="18" y="12" width="28" height="40" rx="5" fill="#1e2023" stroke="#93e2ff" stroke-width="2.5"/>
+  <!-- screen -->
+  <rect x="22" y="18" width="20" height="26" rx="2" fill="#0c0e11"/>
+  <!-- speaker -->
+  <rect x="28" y="14.5" width="8" height="1.6" rx="0.8" fill="#93e2ff"/>
+  <!-- home dot -->
+  <circle cx="32" cy="48" r="1.6" fill="#93e2ff"/>
+  <!-- jail bars in front -->
+  <g stroke="#ffd16d" stroke-width="2.4" stroke-linecap="round">
+    <line x1="26" y1="9" x2="26" y2="55"/>
+    <line x1="32" y1="9" x2="32" y2="55"/>
+    <line x1="38" y1="9" x2="38" y2="55"/>
+  </g>
+  <!-- top & bottom bar rails -->
+  <g stroke="#ffd16d" stroke-width="2.4" stroke-linecap="round">
+    <line x1="22" y1="9" x2="42" y2="9"/>
+    <line x1="22" y1="55" x2="42" y2="55"/>
+  </g>
+</svg>

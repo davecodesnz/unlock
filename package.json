@@ -1,0 +1,12 @@
+{
+  "name": "unlock-app",
+  "version": "1.0.0",
+  "description": "Unlock — daily jobs and screen-time unlock app for kids",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

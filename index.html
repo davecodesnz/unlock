@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="theme-color" content="#111316"/>
+<title>Unlock</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<link rel="apple-touch-icon" href="favicon.svg"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#111316;--sc-lowest:#0c0e11;--sc-low:#1a1c1f;--sc:#1e2023;--sc-high:#282a2d;--sc-highest:#333538;
+  --on-surface:#e2e2e6;--on-surface-variant:#bcc8ce;--outline:#879398;--outline-variant:#3d484d;
+  --primary:#93e2ff;--on-primary:#003543;--primary-container:#4cc9f0;--on-primary-container:#003543;
+  --secondary:#4de082;--on-secondary:#003919;--secondary-container:#00b55d;
+  --tertiary:#ffd16d;--tertiary-container:#ecb210;--on-tertiary-container:#614700;--on-tertiary-fixed:#261a00;
+  --error:#ffb4ab;--error-container:#93000a;
+}
+html,body{height:100%;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--on-surface);-webkit-tap-highlight-color:transparent;}
+.material-symbols-outlined{font-family:'Material Symbols Outlined';font-weight:normal;font-style:normal;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;direction:ltr;font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;}
+.fill{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;}
+.app{max-width:412px;margin:0 auto;min-height:100vh;position:relative;}
+.screen{display:none;padding-bottom:110px;animation:fade 0.25s ease;}
+.screen.active{display:block;}
+@keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.bouncy:active{transform:scale(0.94);}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+
+.appbar{position:sticky;top:0;z-index:40;background:var(--bg);display:flex;justify-content:space-between;align-items:center;padding:16px 20px;}
+.brand{display:flex;align-items:center;gap:12px;}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--primary);border:2px solid var(--primary);display:flex;align-items:center;justify-content:center;color:var(--on-primary);}
+.brand h1{font-size:24px;font-weight:800;color:var(--primary);}
+.appbar .gear{color:var(--primary);font-size:28px;padding:4px;transition:transform 0.2s;}
+.appbar .gear:active{transform:scale(0.9);}
+
+.content{padding:8px 20px 0;}
+.sec-label{font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--primary);margin:24px 4px 12px;}
+
+.week{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;margin-bottom:16px;}
+.week::-webkit-scrollbar{display:none;}
+.daycell{flex:0 0 auto;min-width:54px;height:74px;border-radius:18px;background:var(--sc-low);color:var(--on-surface-variant);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;position:relative;transition:transform 0.12s;}
+.daycell .dn{font-size:11px;font-weight:700;letter-spacing:0.05em;opacity:0.7;}
+.daycell .dd{font-size:22px;font-weight:700;}
+.daycell.active{background:var(--primary);color:var(--on-primary);}
+.daycell.today::after{content:'';position:absolute;bottom:7px;width:5px;height:5px;border-radius:50%;background:var(--secondary);}
+.daycell.active.today::after{background:var(--on-primary);}
+
+.hero{position:relative;height:120px;border-radius:24px;overflow:hidden;margin-bottom:8px;display:flex;flex-direction:column;justify-content:flex-end;padding:18px;}
+.hero .hb{position:absolute;inset:0;z-index:0;}
+.hero .hov{position:absolute;inset:0;z-index:0;background:linear-gradient(180deg,rgba(0,0,0,0.05),rgba(0,0,0,0.55));}
+.hero .htag{position:relative;z-index:1;align-self:flex-start;background:rgba(0,0,0,0.3);color:#fff;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:5px 12px;border-radius:20px;margin-bottom:8px;}
+.hero .htitle{position:relative;z-index:1;font-size:24px;font-weight:800;color:#fff;}
+.hero .hsub{position:relative;z-index:1;font-size:13px;font-weight:600;color:rgba(255,255,255,0.9);margin-top:3px;}
+
+.phase-card{border-radius:24px;padding:18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;background:var(--sc);border:1px solid rgba(255,255,255,0.05);transition:transform 0.12s;}
+.phase-card.active-now{border:2px solid var(--primary);box-shadow:0 0 22px rgba(147,226,255,0.18);}
+.pc-left{display:flex;align-items:center;gap:14px;}
+.pc-icon{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;border:2px solid var(--outline-variant);background:var(--sc-high);color:var(--on-surface-variant);}
+.pc-name{display:flex;align-items:center;gap:8px;}
+.pc-name h4{font-size:22px;font-weight:700;}
+.pc-pulse{width:8px;height:8px;border-radius:50%;background:var(--secondary);animation:pulse 1.4s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.pc-time{font-size:13px;font-weight:700;color:var(--on-surface-variant);margin-top:1px;}
+.pc-status{font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;margin-top:4px;display:inline-block;}
+.pc-go{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+
+.prog-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px;}
+.prog-head h2{font-size:28px;font-weight:700;}
+.prog-head .pct{font-size:14px;font-weight:700;color:var(--primary);}
+.prog-track{height:22px;width:100%;border-radius:20px;background:rgba(255,255,255,0.05);box-shadow:inset 0 2px 4px rgba(0,0,0,0.3);padding:4px;margin-bottom:20px;}
+.prog-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,#4de082,#93e2ff);box-shadow:0 0 15px rgba(91,213,252,0.4);transition:width 0.6s cubic-bezier(.4,0,.2,1);}
+
+.task{width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px;border-radius:22px;margin-bottom:12px;text-align:left;transition:transform 0.12s;background:var(--sc);border:2px solid transparent;}
+.task .tl{display:flex;align-items:center;gap:14px;}
+.task .ti{width:48px;height:48px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:24px;background:var(--sc-high);color:var(--outline);}
+.task .tname{font-size:16px;font-weight:700;color:var(--on-surface);}
+.task .tnote{font-size:12px;font-weight:600;color:var(--on-surface-variant);margin-top:2px;}
+.task .tcheck{width:32px;height:32px;border-radius:50%;border:2px solid var(--outline-variant);flex:0 0 auto;display:flex;align-items:center;justify-content:center;}
+.task.done{background:rgba(77,224,130,0.1);border-color:rgba(77,224,130,0.25);}
+.task.done .ti{background:var(--secondary);color:var(--on-secondary);}
+.task.done .tname{text-decoration:line-through;opacity:0.6;}
+.task.done .tnote{color:var(--secondary);}
+.task.done .tcheck{border-color:transparent;color:var(--secondary);}
+.daypill{font-size:10px;font-weight:700;color:var(--on-tertiary-fixed);background:var(--tertiary);padding:1px 8px;border-radius:8px;margin-left:6px;vertical-align:middle;}
+
+.test-block{border-radius:24px;padding:24px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;background:var(--tertiary-container);margin:24px 0 8px;}
+.test-block.done{background:rgba(77,224,130,0.12);}
+.tb-icon{width:64px;height:64px;border-radius:50%;background:var(--on-tertiary-container);color:var(--tertiary);display:flex;align-items:center;justify-content:center;font-size:34px;}
+.test-block.done .tb-icon{background:var(--secondary);color:var(--on-secondary);}
+.tb-title{font-size:24px;font-weight:700;color:var(--on-tertiary-fixed);}
+.test-block.done .tb-title{color:var(--secondary);}
+.tb-sub{font-size:14px;font-weight:600;color:var(--on-tertiary-container);}
+.test-block.done .tb-sub{color:var(--on-surface-variant);}
+.tb-btn{width:100%;padding:15px;border-radius:30px;background:var(--on-tertiary-container);color:var(--tertiary);font-size:16px;font-weight:700;transition:transform 0.12s;}
+
+.cta{width:100%;padding:16px;border-radius:30px;font-size:16px;font-weight:700;transition:transform 0.12s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;}
+.cta-go{background:var(--secondary);color:var(--on-secondary);}
+.cta-off{background:var(--sc-high);color:var(--on-surface-variant);pointer-events:none;}
+.skip-row{display:flex;gap:10px;margin-top:14px;}
+.skip{flex:1;background:var(--sc);border:1px solid var(--outline-variant);border-radius:18px;padding:11px 12px;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--on-surface);transition:transform 0.12s;}
+.skip.next{justify-content:flex-end;}
+.skip .ss{font-size:11px;font-weight:600;color:var(--on-surface-variant);}
+.skip.disabled{opacity:0.35;pointer-events:none;}
+
+.navbar{position:absolute;bottom:0;left:0;width:100%;display:flex;justify-content:space-around;align-items:center;padding:10px 16px 24px;background:var(--sc);border-radius:24px 24px 0 0;}
+.navtab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 22px;border-radius:16px;color:var(--on-surface-variant);font-size:12px;font-weight:700;transition:transform 0.15s;}
+.navtab .material-symbols-outlined{font-size:24px;}
+.navtab.active{background:var(--primary-container);color:var(--on-primary-container);}
+.navtab:active{transform:scale(0.9);}
+
+.quiz-mesh{background-color:var(--bg);background-image:radial-gradient(at 0% 0%,rgba(0,103,128,0.15) 0,transparent 50%),radial-gradient(at 100% 0%,rgba(0,181,93,0.15) 0,transparent 50%);}
+.quiz-cluster{display:flex;justify-content:space-between;align-items:flex-end;padding:8px 4px 0;margin-bottom:18px;}
+.qc-col{display:flex;flex-direction:column;}
+.qc-col.r{align-items:flex-end;}
+.qc-lab{font-size:12px;font-weight:700;letter-spacing:0.05em;color:var(--on-surface-variant);margin-bottom:2px;}
+.qc-streak{display:flex;align-items:center;gap:4px;color:var(--tertiary);font-size:26px;font-weight:700;}
+.qc-prog{font-size:26px;font-weight:700;color:var(--secondary);}
+.ring{position:relative;width:92px;height:92px;display:flex;align-items:center;justify-content:center;}
+.ring svg{transform:rotate(-90deg);width:100%;height:100%;}
+.ring .rt{position:absolute;font-size:18px;font-weight:700;color:var(--primary);}
+.qbar{height:14px;width:100%;border-radius:20px;background:var(--sc-high);overflow:hidden;margin-bottom:24px;}
+.qbar-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,#4de082,#93e2ff);transition:width 0.4s;}
+.qcard{position:relative;overflow:hidden;background:var(--sc);border:2px solid var(--outline-variant);border-radius:24px;padding:40px 24px;display:flex;flex-direction:column;align-items:center;margin-bottom:24px;}
+.qcard .qq{font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--on-surface-variant);margin-bottom:16px;}
+.qexpr{display:flex;align-items:center;gap:14px;font-size:44px;font-weight:800;color:var(--primary);letter-spacing:-0.02em;}
+.qexpr .op{color:var(--tertiary);}
+.qexpr .eq{color:var(--secondary);}
+.qexpr .blank{min-width:64px;border-bottom:4px dashed var(--primary);text-align:center;}
+.ans-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.ans{height:88px;background:var(--sc);border:2px solid var(--outline-variant);border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;transition:all 0.15s;}
+.ans.correct{border-color:var(--secondary);background:rgba(77,224,130,0.15);color:var(--secondary);}
+.ans.wrong{border-color:var(--error);background:rgba(147,0,10,0.2);color:var(--error);}
+.ans.reveal{border-color:var(--secondary);color:var(--secondary);}
+
+.center-wrap{padding:32px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;}
+.big-icon{width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:52px;margin-bottom:20px;}
+.res-score{font-size:56px;font-weight:800;}
+.res-of{font-size:15px;font-weight:600;color:var(--on-surface-variant);margin-bottom:24px;}
+.stat-row{display:flex;gap:12px;width:100%;margin-bottom:24px;}
+.stat{flex:1;background:var(--sc);border-radius:18px;padding:14px;}
+.stat .sv{font-size:22px;font-weight:800;}
+.stat .sl{font-size:11px;font-weight:600;color:var(--on-surface-variant);margin-top:2px;}
+.res-msg{font-size:15px;font-weight:600;color:var(--on-surface-variant);margin-bottom:24px;line-height:1.5;}
+
+.pin-icon{width:72px;height:72px;border-radius:50%;background:var(--sc);display:flex;align-items:center;justify-content:center;font-size:34px;color:var(--primary);margin-bottom:16px;}
+.pin-dots{display:flex;gap:16px;margin:22px 0 10px;}
+.pdot{width:16px;height:16px;border-radius:50%;border:2px solid var(--outline-variant);}
+.pdot.filled{background:var(--primary);border-color:var(--primary);}
+.pin-err{font-size:13px;font-weight:600;color:var(--error);min-height:20px;margin-bottom:14px;}
+.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%;max-width:280px;}
+.numkey{height:64px;border-radius:20px;background:var(--sc);font-size:24px;font-weight:700;color:var(--on-surface);display:flex;align-items:center;justify-content:center;transition:transform 0.12s;}
+.numkey:active{transform:scale(0.92);background:var(--sc-high);}
+.numkey.ghost{background:transparent;pointer-events:none;}
+.numkey.del{font-size:18px;color:var(--on-surface-variant);}
+.txt-back{display:flex;align-items:center;gap:4px;color:var(--on-surface-variant);font-size:14px;font-weight:600;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div id="s-phases" class="screen active">
+  <div class="appbar">
+    <div class="brand"><div class="avatar"><span class="material-symbols-outlined fill">lock_open</span></div><h1>Unlock</h1></div>
+    <button class="gear material-symbols-outlined bouncy" onclick="parentReset()" title="Parent reset">settings</button>
+  </div>
+  <div class="content">
+    <div class="week" id="week"></div>
+    <div class="hero" id="hero">
+      <div class="hb" id="hero-bg"></div>
+      <div class="hov"></div>
+      <span class="htag" id="hero-tag">Today</span>
+      <div class="htitle" id="hero-title">Daily explorer</div>
+      <div class="hsub" id="hero-sub"></div>
+    </div>
+    <div class="sec-label">Day phases</div>
+    <div id="phase-list"></div>
+  </div>
+  <div class="navbar">
+    <button class="navtab" onclick="navTo('today')"><span class="material-symbols-outlined">today</span>Today</button>
+    <button class="navtab active" onclick="navTo('phases')"><span class="material-symbols-outlined fill">wb_twilight</span>Phases</button>
+    <button class="navtab" onclick="navTo('quiz')"><span class="material-symbols-outlined">quiz</span>Quiz</button>
+  </div>
+</div>
+
+<div id="s-jobs" class="screen">
+  <div class="appbar">
+    <div class="brand"><div class="avatar"><span class="material-symbols-outlined fill">lock_open</span></div><h1>Unlock</h1></div>
+    <button class="gear material-symbols-outlined bouncy" onclick="parentReset()" title="Parent reset">settings</button>
+  </div>
+  <div class="content">
+    <div class="prog-head"><h2 id="jobs-title">Today's jobs</h2><span class="pct" id="jobs-pct">0% done</span></div>
+    <div class="prog-track"><div class="prog-fill" id="jobs-fill" style="width:0%"></div></div>
+    <div id="jobs-list"></div>
+    <div class="test-block" id="test-block"></div>
+    <button class="cta cta-off bouncy" id="jobs-cta" onclick="onPhaseComplete()">Finish all jobs first</button>
+    <div class="skip-row">
+      <button class="skip bouncy" id="skip-prev" onclick="gotoAdjacent(-1)"></button>
+      <button class="skip next bouncy" id="skip-next" onclick="gotoAdjacent(1)"></button>
+    </div>
+  </div>
+  <div class="navbar">
+    <button class="navtab active" onclick="navTo('today')"><span class="material-symbols-outlined fill">today</span>Today</button>
+    <button class="navtab" onclick="navTo('phases')"><span class="material-symbols-outlined">wb_twilight</span>Phases</button>
+    <button class="navtab" onclick="navTo('quiz')"><span class="material-symbols-outlined">quiz</span>Quiz</button>
+  </div>
+</div>
+
+<div id="s-quiz" class="screen quiz-mesh">
+  <div class="appbar">
+    <button class="txt-back bouncy" onclick="cancelTT()"><span class="material-symbols-outlined">arrow_back</span>Back</button>
+    <span class="qc-lab" id="quiz-phase" style="margin:0;"></span>
+  </div>
+  <div class="content">
+    <div class="quiz-cluster">
+      <div class="qc-col"><span class="qc-lab">Streak</span><div class="qc-streak"><span class="material-symbols-outlined fill">local_fire_department</span><span id="q-streak">0</span></div></div>
+      <div class="ring">
+        <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="transparent" stroke="var(--sc-highest)" stroke-width="8"/><circle id="q-ring" cx="50" cy="50" r="45" fill="transparent" stroke="var(--primary)" stroke-width="8" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="0" style="transition:stroke-dashoffset 1s linear;"/></svg>
+        <span class="rt" id="q-time">3:00</span>
+      </div>
+      <div class="qc-col r"><span class="qc-lab">Progress</span><span class="qc-prog" id="q-prog">0/8</span></div>
+    </div>
+    <div class="qbar"><div class="qbar-fill" id="q-bar" style="width:0%"></div></div>
+    <div class="qcard">
+      <div class="qq" id="q-num">Question 1</div>
+      <div class="qexpr" id="q-expr"></div>
+    </div>
+    <div class="ans-grid" id="q-answers"></div>
+  </div>
+  <div class="navbar">
+    <button class="navtab" onclick="navTo('today')"><span class="material-symbols-outlined">today</span>Today</button>
+    <button class="navtab" onclick="navTo('phases')"><span class="material-symbols-outlined">wb_twilight</span>Phases</button>
+    <button class="navtab active" onclick="navTo('quiz')"><span class="material-symbols-outlined fill">quiz</span>Quiz</button>
+  </div>
+</div>
+
+<div id="s-result" class="screen">
+  <div class="appbar"><div class="brand"><div class="avatar"><span class="material-symbols-outlined fill">lock_open</span></div><h1>Unlock</h1></div></div>
+  <div class="center-wrap">
+    <div class="big-icon" id="r-icon"></div>
+    <div class="res-score" id="r-score"></div>
+    <div class="res-of" id="r-of"></div>
+    <div class="stat-row">
+      <div class="stat"><div class="sv" id="r-correct" style="color:var(--secondary)">0</div><div class="sl">Correct</div></div>
+      <div class="stat"><div class="sv" id="r-wrong" style="color:var(--error)">0</div><div class="sl">Wrong</div></div>
+      <div class="stat"><div class="sv" id="r-streak" style="color:var(--tertiary)">0</div><div class="sl">Best streak</div></div>
+    </div>
+    <div class="res-msg" id="r-msg"></div>
+    <button class="cta cta-go bouncy" id="r-btn" style="width:100%" onclick="onTTResultNext()"></button>
+  </div>
+</div>
+
+<div id="s-pin" class="screen">
+  <div class="appbar"><button class="txt-back bouncy" onclick="backToPhase()"><span class="material-symbols-outlined">arrow_back</span>Back</button></div>
+  <div class="center-wrap">
+    <div class="pin-icon"><span class="material-symbols-outlined fill">lock</span></div>
+    <div class="res-score" style="font-size:26px;">Jobs complete</div>
+    <div class="res-of" id="pin-sub">A parent enters the code to unlock screens.</div>
+    <div class="pin-dots"><div class="pdot"></div><div class="pdot"></div><div class="pdot"></div><div class="pdot"></div></div>
+    <div class="pin-err" id="pin-err"></div>
+    <div class="numpad" id="numpad"></div>
+  </div>
+</div>
+
+<div id="s-done" class="screen">
+  <div class="center-wrap" style="padding-top:60px;">
+    <div class="big-icon" style="background:rgba(77,224,130,0.15);color:var(--secondary);font-size:60px;"><span class="material-symbols-outlined fill">lock_open</span></div>
+    <div class="res-score" style="font-size:30px;">Screen time unlocked!</div>
+    <div class="res-msg" id="done-sub" style="margin-top:8px;"></div>
+    <button class="cta bouncy" style="width:100%;background:var(--sc);color:var(--on-surface);border:1px solid var(--outline-variant);" onclick="navTo('phases')">Back to phases</button>
+    <button class="txt-back bouncy" style="margin-top:18px;justify-content:center;" onclick="parentReset()">Parent reset (new day)</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+const DAY=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const ORDER=['morning','afterschool','evening'];
+const realToday=DAY[new Date().getDay()];
+let activeDay=realToday;
+let curPhase='morning';
+
+const JOBICON={uniform:'checkroom',dirty:'local_laundry_service',deodorant:'air',lunchbox:'lunch_dining',chromebook:'laptop_chromebook',pe:'fitness_center',bins_m:'delete',cat:'pets',lunchbox_e:'cleaning_services',homework:'menu_book',bins_in:'recycling',nw_ready:'backpack',fridge:'water_drop',dishes:'dishwasher_gen',teeth:'dentistry',tidy:'bed',nw_hw:'edit_note'};
+
+function buildPhases(){
+  const isMon=activeDay==='Mon',isTue=activeDay==='Tue',isWed=activeDay==='Wed',isThu=activeDay==='Thu';
+  return {
+    morning:{icon:'light_mode',accent:'var(--tertiary)',name:'Morning',tag:'Morning · before school',sub:'Before you leave for school',time:'6:00am – 1:00pm',
+      jobs:[
+        {id:'uniform',label:'Clean uniform on',note:'If none clean, ask mum or dad'},
+        {id:'dirty',label:'Dirty clothes in wash basket',note:'Laundry basket in the laundry'},
+        {id:'deodorant',label:'Deodorant on'},
+        {id:'lunchbox',label:'Lunchbox in bag'},
+        {id:'chromebook',label:'Chromebook in bag'},
+        {id:'pe',label:'PE gear in bag'},
+        ...(isMon?[{id:'bins_m',label:'Bins out before school',note:'Check which bins go out',day:'Mon'}]:[]),
+      ]},
+    afterschool:{icon:'home',accent:'var(--primary)',name:'After school',tag:'After school · before screens',sub:'Before any screens today',time:'1:00pm – 6:30pm',
+      jobs:[
+        {id:'cat',label:'Feed the cat',note:'Evening feed'},
+        {id:'lunchbox_e',label:'Lunchbox emptied & washed'},
+        {id:'homework',label:'Homework or study — 30 min',note:'Same time each day works best'},
+        ...(isTue?[{id:'bins_in',label:'Bring the bins in',day:'Tue'}]:[]),
+        ...(isThu?[{id:'nw_ready',label:'Get ready for Number Works',day:'Thu'}]:[]),
+      ]},
+    evening:{icon:'bedtime',accent:'var(--secondary)',name:'After dinner',tag:'After dinner · evening',sub:'Get these done after dinner',time:'6:30pm – midnight',
+      jobs:[
+        {id:'fridge',label:'Fill the fridge water',note:'Refill if low'},
+        {id:'dishes',label:'Dishes tidied & in dishwasher'},
+        {id:'teeth',label:'Teeth brushed',note:'Before bed'},
+        {id:'tidy',label:'General tidy — your spaces'},
+        ...((isMon||isWed)?[{id:'nw_hw',label:'Number Works homework — 1 sheet',day:activeDay}]:[]),
+      ]},
+  };
+}
+let PH=buildPhases();
+
+const KEY='unlock_v11';
+let state={};
+function loadState(){try{const r=localStorage.getItem(KEY);if(r){const s=JSON.parse(r);if(s.date===new Date().toDateString()){state=s;if(!state.recentQs)state.recentQs=[];return;}resetState(s.recentQs);return;}}catch(e){}resetState();}
+function resetState(keepRecent){state={date:new Date().toDateString(),jobs:{},tt:{morning:null,afterschool:null,evening:null},unlocked:{morning:false,afterschool:false,evening:false},recentQs:keepRecent||[]};saveState();}
+function saveState(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+
+function getTimePhase(){const h=new Date().getHours()*60+new Date().getMinutes();if(h>=360&&h<780)return 'morning';if(h>=780&&h<1110)return 'afterschool';return 'evening';}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+
+function phaseStatus(p){const jobs=PH[p].jobs;const jd=jobs.every(j=>state.jobs[j.id]);const td=state.tt[p]&&state.tt[p].passed;if(state.unlocked[p])return 'done';if(jd&&td)return 'ready';return (jobs.some(j=>state.jobs[j.id])||td)?'progress':'todo';}
+
+function weekDates(){const now=new Date();const di=now.getDay();const off=di===0?-6:1-di;const mon=new Date(now);mon.setDate(now.getDate()+off);const out=[];for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(mon.getDate()+i);out.push({abbr:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][i],date:d.getDate()});}return out;}
+
+function renderWeek(){
+  const el=document.getElementById('week');el.innerHTML='';
+  weekDates().forEach(d=>{
+    const b=document.createElement('button');
+    b.className='daycell bouncy'+(d.abbr===activeDay?' active':'')+(d.abbr===realToday?' today':'');
+    b.innerHTML='<span class="dn">'+d.abbr.toUpperCase()+'</span><span class="dd">'+d.date+'</span>';
+    b.onclick=()=>{activeDay=d.abbr;PH=buildPhases();renderPhases();};
+    el.appendChild(b);
+  });
+}
+
+function renderHero(){
+  const tp=getTimePhase();const ph=PH[tp];
+  document.getElementById('hero-bg').style.background='linear-gradient(135deg, '+ph.accent+', var(--sc))';
+  document.getElementById('hero-tag').textContent=activeDay===realToday?'Today':activeDay.toUpperCase()+' preview';
+  document.getElementById('hero-title').textContent=ph.name+' time';
+  const extras={Mon:'Bins out + Number Works homework',Tue:'Bring the bins in',Wed:'Number Works homework',Thu:'Get ready for Number Works'};
+  document.getElementById('hero-sub').textContent=extras[activeDay]||'Standard jobs today';
+}
+
+function renderPhases(){
+  renderWeek();renderHero();
+  const el=document.getElementById('phase-list');el.innerHTML='';
+  const tp=getTimePhase();
+  const statusColor={done:'var(--secondary)',ready:'var(--secondary)',progress:'var(--secondary)',todo:'var(--on-surface-variant)'};
+  const statusText={done:'Unlocked',ready:'Ready',progress:'In progress',todo:'To do'};
+  ORDER.forEach(p=>{
+    const ph=PH[p];const st=phaseStatus(p);const isNow=(p===tp&&activeDay===realToday);
+    const card=document.createElement('div');
+    card.className='phase-card bouncy'+(isNow?' active-now':'');
+    const goIcon=st==='done'?'check':'arrow_forward';
+    const goStyle=isNow?'background:var(--primary);color:var(--on-primary);':'background:var(--sc-high);color:var(--on-surface-variant);';
+    const iconStyle=isNow?'border-color:'+ph.accent+';background:rgba(147,226,255,0.12);color:'+ph.accent+';':'';
+    card.innerHTML='<div class="pc-left">'
+      +'<div class="pc-icon" style="'+iconStyle+'"><span class="material-symbols-outlined fill">'+ph.icon+'</span></div>'
+      +'<div><div class="pc-name"><h4>'+ph.name+'</h4>'+(st==='progress'?'<span class="pc-pulse"></span>':'')+'</div>'
+      +'<div class="pc-time">'+ph.time+'</div>'
+      +'<span class="pc-status" style="color:'+statusColor[st]+'">'+statusText[st]+'</span></div></div>'
+      +'<div class="pc-go" style="'+goStyle+'"><span class="material-symbols-outlined">'+goIcon+'</span></div>';
+    card.onclick=()=>openPhase(p);
+    el.appendChild(card);
+  });
+}
+
+function openPhase(p){
+  curPhase=p;
+  if(state.unlocked[p]){showDone(p);return;}
+  const ph=PH[p];
+  document.getElementById('jobs-title').textContent=activeDay===realToday?ph.name+' jobs':ph.name+' · '+activeDay;
+  renderJobs(p);
+  showScreen('s-jobs');
+}
+
+function renderJobs(p){
+  const el=document.getElementById('jobs-list');const ph=PH[p];el.innerHTML='';
+  ph.jobs.forEach(j=>{
+    const done=!!state.jobs[j.id];
+    const b=document.createElement('button');
+    b.className='task bouncy'+(done?' done':'');
+    b.innerHTML='<div class="tl"><div class="ti"><span class="material-symbols-outlined '+(done?'fill':'')+'">'+(done?'check_circle':(JOBICON[j.id]||'task_alt'))+'</span></div>'
+      +'<div><div class="tname">'+j.label+(j.day?'<span class="daypill">'+j.day+'</span>':'')+'</div>'+(j.note?'<div class="tnote">'+j.note+'</div>':(done?'<div class="tnote">Nicely done!</div>':''))+'</div></div>'
+      +'<div class="tcheck">'+(done?'<span class="material-symbols-outlined fill">check_circle</span>':'')+'</div>';
+    b.onclick=()=>{state.jobs[j.id]=!state.jobs[j.id];saveState();renderJobs(p);};
+    el.appendChild(b);
+  });
+  const td=state.tt[p]&&state.tt[p].passed;
+  const tb=document.getElementById('test-block');
+  tb.className='test-block'+(td?' done':'');
+  tb.innerHTML='<div class="tb-icon"><span class="material-symbols-outlined fill">'+(td?'check':'calculate')+'</span></div>'
+    +'<div><div class="tb-title">Times tables test</div><div class="tb-sub">'+(td?'Passed '+state.tt[p].correct+'/8 — great work!':'8 questions · need 5 · 3 minutes')+'</div></div>'
+    +(td?'':'<button class="tb-btn bouncy" onclick="startTT(\''+p+'\')">Start</button>');
+  updateJobsProgress(p);
+  updateSkip(p);
+}
+
+function updateJobsProgress(p){
+  const jobs=PH[p].jobs;const total=jobs.length+1;
+  let done=jobs.filter(j=>state.jobs[j.id]).length;if(state.tt[p]&&state.tt[p].passed)done++;
+  const pct=Math.round(done/total*100);
+  document.getElementById('jobs-fill').style.width=pct+'%';
+  document.getElementById('jobs-pct').textContent=pct+'% done';
+  const cta=document.getElementById('jobs-cta');
+  if(done===total){cta.className='cta cta-go bouncy';cta.innerHTML='Jobs complete — parent unlock <span class="material-symbols-outlined">arrow_forward</span>';}
+  else{cta.className='cta cta-off bouncy';cta.textContent='Finish all jobs first';}
+}
+
+function updateSkip(p){
+  const i=ORDER.indexOf(p);
+  const prev=document.getElementById('skip-prev'),next=document.getElementById('skip-next');
+  if(i<=0){prev.classList.add('disabled');prev.innerHTML='<span class="material-symbols-outlined">chevron_left</span><span><span class="ss">Start of day</span><br>—</span>';}
+  else{prev.classList.remove('disabled');prev.innerHTML='<span class="material-symbols-outlined">chevron_left</span><span><span class="ss">Back to</span><br>'+PH[ORDER[i-1]].name+'</span>';}
+  if(i>=ORDER.length-1){next.classList.add('disabled');next.innerHTML='<span style="text-align:right"><span class="ss">End of day</span><br>—</span><span class="material-symbols-outlined">chevron_right</span>';}
+  else{next.classList.remove('disabled');next.innerHTML='<span style="text-align:right"><span class="ss">Skip to</span><br>'+PH[ORDER[i+1]].name+'</span><span class="material-symbols-outlined">chevron_right</span>';}
+}
+
+function gotoAdjacent(dir){const i=ORDER.indexOf(curPhase)+dir;if(i<0||i>=ORDER.length)return;openPhase(ORDER[i]);}
+function onPhaseComplete(){showPin();}
+function navTo(t){if(t==='phases'){renderPhases();showScreen('s-phases');}else if(t==='today'){openPhase(activeDay===realToday?getTimePhase():curPhase);}else if(t==='quiz'){startTT(curPhase);}}
+
+let tt={},ttTimer=null,ttPhase='';
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function qkey(a,b){return Math.min(a,b)+'x'+Math.max(a,b);}
+function genQs(){
+  const recent=new Set(state.recentQs||[]);
+  const used=new Set();
+  const qs=[];
+  let guard=0;
+  while(qs.length<8 && guard<5000){
+    guard++;
+    const a=rnd(2,12),b=rnd(2,12);const k=qkey(a,b);
+    if(used.has(k))continue;
+    if(recent.has(k) && guard<600)continue;
+    used.add(k);
+    const ans=a*b;const w=new Set();
+    while(w.size<3){const v=ans+rnd(-4,4)*rnd(1,4);if(v!==ans&&v>0)w.add(v);}
+    qs.push({a,b,ans,opts:[...w,ans].sort(()=>Math.random()-0.5)});
+  }
+  state.recentQs=(state.recentQs||[]).concat([...used]).slice(-24);
+  saveState();
+  return qs;
+}
+function startTT(p){
+  ttPhase=p;curPhase=p;
+  tt={qs:genQs(),idx:0,correct:0,answered:0,timeLeft:180,done:false,curStreak:0,bestStreak:0};
+  document.getElementById('quiz-phase').textContent=PH[p].name.toUpperCase();
+  showScreen('s-quiz');renderQ();clearInterval(ttTimer);ttTimer=setInterval(tick,1000);
+}
+function tick(){tt.timeLeft--;const m=Math.floor(tt.timeLeft/60),s=tt.timeLeft%60;document.getElementById('q-time').textContent=m+':'+(s.toString().padStart(2,'0'));document.getElementById('q-ring').setAttribute('stroke-dashoffset',283*(1-tt.timeLeft/180));const r=document.getElementById('q-ring');r.setAttribute('stroke',tt.timeLeft>60?'var(--primary)':tt.timeLeft>30?'var(--tertiary)':'var(--error)');if(tt.timeLeft<=0){clearInterval(ttTimer);endTT();}}
+function renderQ(){
+  if(tt.idx>=tt.qs.length){clearInterval(ttTimer);endTT();return;}
+  const q=tt.qs[tt.idx];
+  document.getElementById('q-num').textContent='Question '+(tt.idx+1);
+  document.getElementById('q-expr').innerHTML='<span>'+q.a+'</span><span class="op">×</span><span>'+q.b+'</span><span class="eq">=</span><span class="blank">?</span>';
+  document.getElementById('q-streak').textContent=tt.curStreak;
+  document.getElementById('q-prog').textContent=tt.answered+'/8';
+  document.getElementById('q-bar').style.width=(tt.answered/8*100)+'%';
+  const el=document.getElementById('q-answers');el.innerHTML='';
+  q.opts.forEach(o=>{const b=document.createElement('button');b.className='ans bouncy';b.textContent=o;b.onclick=()=>answer(o,q.ans,b,el);el.appendChild(b);});
+}
+function answer(val,ans,btn,el){
+  if(tt.done)return;el.querySelectorAll('.ans').forEach(b=>b.onclick=null);
+  if(val===ans){btn.classList.add('correct');tt.correct++;tt.curStreak++;tt.bestStreak=Math.max(tt.bestStreak,tt.curStreak);}
+  else{btn.classList.add('wrong');btn.animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:200,iterations:2});el.querySelectorAll('.ans').forEach(b=>{if(+b.textContent===ans)b.classList.add('reveal');});tt.curStreak=0;}
+  document.getElementById('q-streak').textContent=tt.curStreak;
+  tt.answered++;tt.idx++;setTimeout(renderQ,700);
+}
+function endTT(){
+  tt.done=true;const passed=tt.correct>=5;
+  state.tt[ttPhase]={correct:tt.correct,passed};saveState();
+  const ic=document.getElementById('r-icon');
+  ic.innerHTML='<span class="material-symbols-outlined fill">'+(passed?'check_circle':'cancel')+'</span>';
+  ic.style.cssText=passed?'background:rgba(77,224,130,0.15);color:var(--secondary);':'background:rgba(147,0,10,0.2);color:var(--error);';
+  document.getElementById('r-score').textContent=tt.correct+'/8';
+  document.getElementById('r-score').style.color=passed?'var(--secondary)':'var(--error)';
+  document.getElementById('r-of').textContent=passed?'Passed — great work!':'Not enough — need 5 to pass';
+  document.getElementById('r-correct').textContent=tt.correct;
+  document.getElementById('r-wrong').textContent=8-tt.correct;
+  document.getElementById('r-streak').textContent=tt.bestStreak;
+  const msgs=passed?['Smashed it!','Really solid effort.','Times tables locked in.']:['Nearly there — one more go!','A bit more practice and you\'ll nail it.','Don\'t give up!'];
+  document.getElementById('r-msg').textContent=msgs[Math.floor(Math.random()*msgs.length)];
+  document.getElementById('r-btn').textContent=passed?'Back to jobs':'Try again';
+  showScreen('s-result');
+}
+function onTTResultNext(){const passed=state.tt[ttPhase]&&state.tt[ttPhase].passed;if(passed)openPhase(ttPhase);else startTT(ttPhase);}
+function cancelTT(){clearInterval(ttTimer);openPhase(ttPhase);}
+
+let pinVal='';
+function showPin(){
+  pinVal='';updateDots();document.getElementById('pin-err').textContent='';
+  document.getElementById('pin-sub').textContent=PH[curPhase].name+' jobs done — a parent enters the code.';
+  const pad=document.getElementById('numpad');pad.innerHTML='';
+  [1,2,3,4,5,6,7,8,9,null,0,'⌫'].forEach(k=>{const el=document.createElement('button');if(k===null)el.className='numkey ghost';else{el.className='numkey'+(k==='⌫'?' del':'');el.textContent=k;el.onclick=()=>press(String(k));}pad.appendChild(el);});
+  showScreen('s-pin');
+}
+function press(k){if(k==='⌫')pinVal=pinVal.slice(0,-1);else if(pinVal.length<4)pinVal+=k;updateDots();document.getElementById('pin-err').textContent='';if(pinVal.length===4){if(pinVal==='1980'){state.unlocked[curPhase]=true;saveState();showDone(curPhase);}else{document.getElementById('pin-err').textContent='Wrong code — try again';setTimeout(()=>{pinVal='';updateDots();document.getElementById('pin-err').textContent='';},1200);}}}
+function updateDots(){document.querySelectorAll('.pdot').forEach((d,i)=>d.classList.toggle('filled',i<pinVal.length));}
+function backToPhase(){openPhase(curPhase);}
+
+function showDone(p){curPhase=p;document.getElementById('done-sub').innerHTML='<b>'+PH[p].name+'</b> jobs and times tables all done.<br>Enjoy your screen time!';showScreen('s-done');}
+function parentReset(){if(confirm('Reset everything for a new day?')){resetState(state.recentQs);activeDay=realToday;PH=buildPhases();renderPhases();showScreen('s-phases');}}
+
+function init(){loadState();openPhase(getTimePhase());}
+init();
+</script>
+</body>
+</html>
